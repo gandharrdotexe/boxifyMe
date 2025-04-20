@@ -1,6 +1,7 @@
 import Navbar from "./components/pages/Navbar"
 import ImageUploadPage from "./components/pages/ImageUploadPage"
-import excalidraxTry from "./components/pages/excalidrawTry"
+
+import ImgUpload from "./components/pages/ImgUpload"
 export default function App() {
   return (
     // <h1 className="text-sky-600 text-3xl font-bold underline text-center">
@@ -8,7 +9,7 @@ export default function App() {
     // </h1>
     <>
       
-      <ImageUploadPage />
+      <ImgUpload />
     </>
   )
 }
