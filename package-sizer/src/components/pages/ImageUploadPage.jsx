@@ -113,7 +113,7 @@
 // };
 
 // export default ImageUploadPage;
-
+//for commit
 import React, { useState } from "react";
 import { UploadCloud, X } from "lucide-react";
 import { useDropzone } from "react-dropzone";
