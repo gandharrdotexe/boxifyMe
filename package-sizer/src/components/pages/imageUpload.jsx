@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Upload, ImageIcon } from "lucide-react"
@@ -13,6 +13,12 @@ export default function ImageUpload({ onImageUploaded }) {
   const [isUploading, setIsUploading] = useState(false)
   const fileInputRef = useRef(null)
   const { toast } = useToast()
+
+  useEffect(() => {
+    return () => {
+      if (preview) URL.revokeObjectURL(preview)
+    }
+  }, [preview])
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files?.[0]
@@ -41,8 +47,6 @@ export default function ImageUpload({ onImageUploaded }) {
 
     const objectUrl = URL.createObjectURL(selectedFile)
     setPreview(objectUrl)
-
-    return () => URL.revokeObjectURL(objectUrl)
   }
 
   const handleUpload = async () => {
@@ -62,7 +66,7 @@ export default function ImageUpload({ onImageUploaded }) {
         },
       })
 
-      const imageUrl = response.data.imageUrl
+      const imageUrl = `http://localhost:5001${response.data.filePath}` // Make sure this matches your backend
 
       toast({
         title: "Upload successful",
@@ -84,22 +88,6 @@ export default function ImageUpload({ onImageUploaded }) {
 
   const triggerFileInput = () => {
     fileInputRef.current?.click()
-  }
-
-  const simulateUpload = () => {
-    if (!file || !preview) return
-
-    setIsUploading(true)
-
-    setTimeout(() => {
-      setIsUploading(false)
-      toast({
-        title: "Upload successful",
-        description: "Your image has been uploaded successfully.",
-      })
-
-      onImageUploaded(preview)
-    }, 1500)
   }
 
   return (
@@ -142,7 +130,7 @@ export default function ImageUpload({ onImageUploaded }) {
 
       {preview && (
         <div className="flex justify-center">
-          <Button onClick={simulateUpload} disabled={isUploading} className="w-full max-w-xs">
+          <Button onClick={handleUpload} disabled={isUploading} className="w-full max-w-xs">
             {isUploading ? (
               <>
                 <span className="animate-spin mr-2">◌</span>
