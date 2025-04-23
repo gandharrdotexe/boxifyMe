@@ -13,6 +13,7 @@ export default function ImageUpload({ onImageUploaded }) {
   const [isUploading, setIsUploading] = useState(false)
   const fileInputRef = useRef(null)
   const { toast } = useToast()
+  const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
     return () => {
@@ -66,8 +67,8 @@ export default function ImageUpload({ onImageUploaded }) {
         },
       })
 
-      const imageUrl = `http://localhost:5001${response.data.filePath}` // Make sure this matches your backend
-
+      console.log(response.data.imageUrl);// Make sure this matches your backend
+      setImageUrl(response.data.imageUrl);
       toast({
         title: "Upload successful",
         description: "Your image has been uploaded successfully.",
