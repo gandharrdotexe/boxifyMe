@@ -2,7 +2,7 @@ import Navbar from "./components/pages/Navbar"
 import ImageUploadPage from "./components/pages/ImageUploadPage"
 import ImageUpload from "./components/pages/imageUpload"
 
-import ImgUpload from "./components/pages/ImgUpload"
+
 import TuckboxGenerator from "./TuckboxGenerato"
 import ReferenceSelection from "./components/pages/referenceSelection"
 import { useState } from "react"
@@ -46,6 +46,7 @@ export default function App()
   return (
     
     <ImageUpload  />
+    
 
     
 

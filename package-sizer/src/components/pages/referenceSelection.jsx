@@ -10,10 +10,26 @@ export default function ReferenceSelection({ imageUrl, referenceObjects, onRefer
   const [selectedReference, setSelectedReference] = useState("")
 
   const handleContinue = () => {
-    if (selectedReference) {
-      onReferenceSelected(selectedReference)
+    if (selectedReference && imageUrl) {
+      onReferenceSelected(selectedReference); // still invoke the original callback if needed
+  
+      fetch("http://localhost:5000/measure", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ image_url: imageUrl })  // assumes imageUrl is cloudinaryUrl
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log("Measurement response:", data.measurements);  
+          // Optionally handle/display data here
+        })
+        .catch(err => {
+          console.error("Error measuring dimensions:", err);
+        });
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -69,11 +85,15 @@ export default function ReferenceSelection({ imageUrl, referenceObjects, onRefer
                       <span>Coin (INR ₹10)</span>
                       <span className="font-medium">2.7 cm diameter</span>
                     </li>
+                    <li className="flex justify-between">
+                      <span>Sqaure</span>
+                      <span className="font-medium">2x2 cm </span>
+                    </li>
                   </ul>
                 </div>
 
                 <Button onClick={handleContinue} disabled={!selectedReference} className="w-full">
-                  Continue to Drawing
+                  Measure Dimensions
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>

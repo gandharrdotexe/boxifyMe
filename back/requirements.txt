@@ -1,0 +1,6 @@
+Flask
+numpy
+opencv-python
+imutils
+scipy
+requests  # to fetch image from Cloudinary URL
