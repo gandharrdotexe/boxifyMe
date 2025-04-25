@@ -1,0 +1,223 @@
+"use client";
+
+import React, { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowLeft, Download, ZoomIn, ZoomOut, RotateCw } from "lucide-react";
+
+
+export default function DemoModelPage() {
+  const [dimensions, setDimensions] = useState({ height: 10, width: 5, length: 4 });
+  const [showDieline, setShowDieline] = useState(false);
+  const [scale, setScale] = useState(100);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setDimensions((prev) => ({ ...prev, [name]: parseFloat(value) || 0 }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setShowDieline(true);
+  };
+
+  const handleReset = () => setShowDieline(false);
+  const zoomIn = () => setScale((prev) => Math.min(prev + 10, 200));
+  const zoomOut = () => setScale((prev) => Math.max(prev - 10, 20));
+  const resetZoom = () => setScale(50);
+
+  return (
+    <main className="container mx-auto py-8 px-4">
+      {/* <Link href="/" className="inline-flex items-center text-sm mb-6 hover:underline">
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Back to Image Measurement Tool
+      </Link> */}
+
+      <Card>
+        <CardHeader>
+          <CardTitle>RTE Box Dieline Generator</CardTitle>
+          <CardDescription>Enter dimensions to generate a 2D dieline layout for a Reverse Tuck End box</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue={showDieline ? "dieline" : "input"} value={showDieline ? "dieline" : "input"}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="input" onClick={handleReset}>Input Dimensions</TabsTrigger>
+              <TabsTrigger value="dieline" disabled={!showDieline}>View Dieline</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="input" className="space-y-4 py-4">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {['height', 'width', 'length'].map((dim) => (
+                    <div key={dim} className="space-y-2">
+                      <Label htmlFor={dim}>{dim.charAt(0).toUpperCase() + dim.slice(1)} ({dim[0].toUpperCase()}) in cm</Label>
+                      <Input
+                        id={dim}
+                        name={dim}
+                        type="number"
+                        step="0.1"
+                        min="0.1"
+                        value={dimensions[dim]}
+                        onChange={handleInputChange}
+                        required
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        {dim === 'height' ? 'Vertical dimension of faces' : dim === 'width' ? 'Front/back face width' : 'Side panel length/depth'}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <Button type="submit" className="w-full">Generate Dieline</Button>
+              </form>
+            </TabsContent>
+
+            <TabsContent value="dieline" className="py-4">
+              {showDieline && (
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center space-x-2">
+                      <Button variant="outline" size="icon" onClick={zoomOut}><ZoomOut className="h-4 w-4" /></Button>
+                      <span className="text-sm font-medium w-16 text-center">{scale}%</span>
+                      <Button variant="outline" size="icon" onClick={zoomIn}><ZoomIn className="h-4 w-4" /></Button>
+                      <Button variant="outline" size="icon" onClick={resetZoom}><RotateCw className="h-4 w-4" /></Button>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center"><div className="w-4 h-4 border-2 border-red-500 rounded-md mr-2"></div><span className="text-sm">Cut Lines</span></div>
+                      <div className="flex items-center"><div className="w-4 h-4 border-2 border-dashed border-green-500 rounded-md mr-2"></div><span className="text-sm">Fold Lines</span></div>
+                    </div>
+                  </div>
+                  <div className="flex justify-center">
+                    <div className="w-[1120px] h-[840px] border rounded-lg shadow-sm bg-gray-50 overflow-hidden flex items-center justify-center">
+                      <DielineViewer dimensions={dimensions} scale={scale} onDimensionsChange={setDimensions} />
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="grid grid-cols-3 gap-4">
+                      {['height', 'width', 'length'].map((dim) => (
+                        <div key={`${dim}-edit`} className="space-y-2">
+                          <Label htmlFor={`${dim}-edit`}>{dim.charAt(0).toUpperCase() + dim.slice(1)} ({dim[0].toUpperCase()})</Label>
+                          <Input
+                            id={`${dim}-edit`}
+                            name={dim}
+                            type="number"
+                            step="0.1"
+                            min="0.1"
+                            value={dimensions[dim]}
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <Button variant="outline" className="flex items-center"><Download className="mr-2 h-4 w-4" />Export as PDF</Button>
+                  </div>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+    </main>
+  );
+}
+
+function Panel({ label, width, height, className = "" }) {
+  return (
+    <div
+      className={`border-2 border-red-500 bg-white text-xs flex items-center justify-center relative rounded-md ${className}`}
+      style={{ width: `${width}cm`, height: `${height}cm` }}
+    >
+      <div className="absolute inset-0 flex items-center justify-center">{label}</div>
+      <div className="absolute top-1 left-1 text-[8px] text-gray-500">
+        {width.toFixed(1)} × {height.toFixed(1)}
+      </div>
+    </div>
+  );
+}
+
+function Flap({ label, width, height, dashed = true, className = "" }) {
+  return (
+    <div
+      className={`border-2 ${dashed ? "border-dashed" : "border-solid"} border-green-500 bg-gray-50 text-xs flex items-center justify-center relative rounded-md ${className}`}
+      style={{ width: `${width}cm`, height: `${height}cm` }}
+    >
+      <div className="absolute inset-0 flex items-center justify-center">{label}</div>
+      <div className="absolute top-1 left-1 text-[8px] text-gray-500">
+        {width.toFixed(1)} × {height.toFixed(1)}
+      </div>
+    </div>
+  );
+}
+
+function Dieline({ height, width, length }) {
+  const glueWidth = 0.5;
+  const flapHeight = (1 / 3) * length;
+  const tuckHeight = (3 / 4) * length;
+
+  return (
+    <div className="flex flex-col items-center">
+      <div className="flex">
+        <div style={{ width: `${glueWidth}cm` }}></div>
+        <div style={{ width: `${length}cm` }}><Flap label="Dust Flap" width={length} height={flapHeight} /></div>
+        <Flap label="Tuck Flap (Back)" width={width} height={tuckHeight} dashed={false} />
+        <div style={{ width: `${length}cm` }}><Flap label="Dust Flap" width={length} height={flapHeight} /></div>
+        <div style={{ width: `${width}cm` }}></div>
+      </div>
+      <div className="flex">
+        <Panel label="Glue Tab" width={glueWidth} height={height} />
+        <Panel label="Side Panel" width={length} height={height} />
+        <Panel label="Back Panel" width={width} height={height} />
+        <Panel label="Side Panel" width={length} height={height} />
+        <Panel label="Front Panel" width={width} height={height} />
+      </div>
+      <div className="flex">
+        <div style={{ width: `${glueWidth}cm` }}></div>
+        <div style={{ width: `${length}cm` }}><Flap label="Dust Flap" width={length} height={flapHeight} /></div>
+        <Flap label="Tuck Flap (Front)" width={width} height={tuckHeight} dashed={false} />
+        <div style={{ width: `${length}cm` }}><Flap label="Dust Flap" width={length} height={flapHeight} /></div>
+        <div style={{ width: `${width}cm` }}></div>
+      </div>
+    </div>
+  );
+}
+
+function DielineViewer({ dimensions, scale, onDimensionsChange }) {
+  const containerRef = useRef(null);
+  const [autoScale, setAutoScale] = useState(1);
+  const { height, width, length } = dimensions;
+
+  const totalWidth = length * 2 + width * 2 + 0.5;
+  const totalHeight = height + (1 / 3) * length * 2 + (3 / 4) * length * 2;
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const containerWidth = containerRef.current.clientWidth;
+    const containerHeight = containerRef.current.clientHeight;
+    const baseScale = 20;
+    const dilineWidthPx = totalWidth * baseScale;
+    const dilineHeightPx = totalHeight * baseScale;
+    const scaleX = (containerWidth - 40) / dilineWidthPx;
+    const scaleY = (containerHeight - 40) / dilineHeightPx;
+    const newAutoScale = Math.min(scaleX, scaleY);
+    setAutoScale(newAutoScale);
+  }, [dimensions, totalWidth, totalHeight]);
+
+  const finalScale = (autoScale * scale) / 100;
+
+  return (
+    <div ref={containerRef} className="w-full h-full flex items-center justify-center overflow-hidden p-4">
+      <div
+        className="bg-white p-6 rounded-lg shadow-sm transform-gpu"
+        style={{
+          transform: `scale(${finalScale})`,
+          transformOrigin: "center center",
+          transition: "transform 0.2s ease",
+        }}
+      >
+        <Dieline height={height} width={width} length={length} />
+      </div>
+    </div>
+  );
+}

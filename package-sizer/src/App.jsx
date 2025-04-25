@@ -1,9 +1,9 @@
 import Navbar from "./components/pages/Navbar"
 import ImageUploadPage from "./components/pages/ImageUploadPage"
 import ImageUpload from "./components/pages/imageUpload"
+import TemplateProcess from "./components/pages/TemplateProcess"
+import DemoModelPage from "./DielineBox"
 
-
-import TuckboxGenerator from "./TuckboxGenerato"
 import ReferenceSelection from "./components/pages/referenceSelection"
 import { useState } from "react"
 import BoundingBoxDrawer from "./components/pages/BoundingBoxDrawer"
@@ -20,6 +20,11 @@ export default function App()
     "Standard Pen": 14,
     "Coin (INR ₹10)": 2.7,
     }
+  const dimensions = {
+    "length": 12.1,
+    "width": 9,
+    "depth":3
+  }
   const handleReferenceSelected = (reference) => {
     setSelectedReference(reference)
     setCurrentStep(3)
@@ -45,10 +50,13 @@ export default function App()
   }
   return (
     
-    <ImageUpload  />
+    // <ImageUpload  />
     
-
+    // <TemplateProcess imageUrl="http://127.0.0.1:5000/static/annotated_image.jpg"
+    //   referenceObject="2x2 cube"
+    //   dimensions={dimensions}
+    // />
     
-
+<DemoModelPage/>
   )
 }
