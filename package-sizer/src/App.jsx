@@ -3,11 +3,12 @@ import ImageUploadPage from "./components/pages/ImageUploadPage"
 import ImageUpload from "./components/pages/imageUpload"
 import TemplateProcess from "./components/pages/TemplateProcess"
 import DemoModelPage from "./DielineBox"
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ReferenceSelection from "./components/pages/referenceSelection"
 import { useState } from "react"
 import BoundingBoxDrawer from "./components/pages/BoundingBoxDrawer"
-
+import CostEstimationPage from "./components/pages/CostEstimation"
+import KK from "./components/pages/kk"
 export default function App()
 
 
@@ -50,13 +51,17 @@ export default function App()
   }
   return (
     
-    // <ImageUpload  />
+    <Router>
+      <Routes>
+        <Route path="/" element={<ImageUpload />} />
+        
+        <Route path="/templates" element={<DemoModelPage />} />
+        <Route path="//cost-estimation" element={<CostEstimationPage/>}/>
+      </Routes>
+    </Router>
     
-    // <TemplateProcess imageUrl="http://127.0.0.1:5000/static/annotated_image.jpg"
-    //   referenceObject="2x2 cube"
-    //   dimensions={dimensions}
-    // />
-    
-<DemoModelPage/>
+
+
+
   )
 }

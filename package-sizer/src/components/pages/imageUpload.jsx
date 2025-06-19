@@ -268,6 +268,7 @@ import { useToast } from "@/hooks/use-toast"
 import axios from "axios"
 import ReferenceSelection from "./referenceSelection"
 import { motion, AnimatePresence } from "framer-motion"
+import Navbar from "./Navbar"
 
 export default function ImageUpload({ onImageUploaded }) {
   const [file, setFile] = useState(null)
@@ -350,7 +351,7 @@ export default function ImageUpload({ onImageUploaded }) {
   }
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-white px-4">
+    <><Navbar /><div className="w-full h-screen flex items-center justify-center bg-white px-4">
       <AnimatePresence>
         {!imageUrl ? (
           <motion.div
@@ -366,13 +367,10 @@ export default function ImageUpload({ onImageUploaded }) {
               ref={fileInputRef}
               onChange={handleFileChange}
               accept="image/jpeg,image/jpg,image/png"
-              className="hidden"
-            />
+              className="hidden" />
 
             <Card
-              className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer hover:bg-gray-50 transition-colors ${
-                preview ? "border-green-300" : "border-gray-300"
-              }`}
+              className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer hover:bg-gray-50 transition-colors ${preview ? "border-green-300" : "border-gray-300"}`}
               onClick={triggerFileInput}
             >
               {preview ? (
@@ -381,8 +379,7 @@ export default function ImageUpload({ onImageUploaded }) {
                     <img
                       src={preview || "/placeholder.svg"}
                       alt="Preview"
-                      className="max-h-64 max-w-full mx-auto rounded-md object-contain"
-                    />
+                      className="max-h-64 max-w-full mx-auto rounded-md object-contain" />
                   </div>
                   <p className="text-sm text-gray-500">Click to change image</p>
                 </div>
@@ -433,14 +430,14 @@ export default function ImageUpload({ onImageUploaded }) {
                 "Coin (INR ₹10)",
                 "2x2 cm Square",
               ]}
-              onReferenceSelected={(selected) => {
+              onReferenceSelected={(selected) =>
+              {
                 console.log("Selected reference:", selected)
-              }}
-              className="w-full"
-            />
+              } }
+              className="w-full" />
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </div></>
   )
 }

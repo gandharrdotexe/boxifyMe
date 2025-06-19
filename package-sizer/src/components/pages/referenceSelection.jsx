@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowRight } from "lucide-react"
 import TemplateProcess from "./TemplateProcess"
+import Navbar from "./Navbar"
 
 export default function ReferenceSelection({ imageUrl, referenceObjects, onReferenceSelected })
 {
@@ -32,10 +33,11 @@ export default function ReferenceSelection({ imageUrl, referenceObjects, onRefer
           console.log("Measurement response:", data.measurements[0]);
           console.log("url: ", data.annotated_image_url);
 
-         
+          let length=Math.ceil(data.measurements[0].length * 10) / 10;
+         let width=Math.ceil(data.measurements[0].width * 10) / 10;
            setDimensions({
-  length: data.measurements[0].length,
-  width: data.measurements[0].width,
+  length: length,
+  width: width,
   height: 3
 });
 
@@ -95,14 +97,8 @@ export default function ReferenceSelection({ imageUrl, referenceObjects, onRefer
                         <span>Credit Card</span>
                         <span className="font-medium">8.5 cm width</span>
                       </li>
-                      <li className="flex justify-between">
-                        <span>A4 Paper Width</span>
-                        <span className="font-medium">21 cm width</span>
-                      </li>
-                      <li className="flex justify-between">
-                        <span>Standard Pen</span>
-                        <span className="font-medium">14 cm length</span>
-                      </li>
+                      
+                      
                       <li className="flex justify-between">
                         <span>Coin (INR ₹10)</span>
                         <span className="font-medium">2.7 cm diameter</span>
